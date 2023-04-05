@@ -56,7 +56,59 @@ where num > 1
 窗口函数中可以用聚合函数作排序依据
 rank() over(order by 聚合函数)
 ---------------------------------------------------------------------------------------------------------------------------------------------
+PIVOT 透视
+618. Students Report By Geography
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| name        | varchar |
+| continent   | varchar |
++-------------+---------+
 
+Input: 
+Student table:
++--------+-----------+
+| name   | continent |
++--------+-----------+
+| Jane   | America   |
+| Pascal | Europe    |
+| Xi     | Asia      |
+| Jack   | America   |
++--------+-----------+
+Output: 
++---------+------+--------+
+| America | Asia | Europe |
++---------+------+--------+
+| Jack    | Xi   | Pascal |
+| Jane    | null | null   |
++---------+------+--------+
+
+select
+    max(case when continent = 'America' then name else null end) America,
+    max(case when continent = 'Asia' then name else null end) Asia,
+    max(case when continent = 'Europe' then name else null end) Europe
+from
+    (select 
+        name, 
+        continent, 
+        row_number()over(partition by continent order by name) cur_rank
+    from
+        student)t 
+group by cur_rank
+先用rank分continent打标签，然后遍历三次max生成一行内容，max的意义是，比如Jack是America，
+max(case when continent = 'America' then name else null end)时得到max(Jack,null,null) = Jack，成为Amrica这一列的值
+
+ChatGPT例子
+SELECT 
+    name, 
+    SUM(CASE WHEN month = 'Jan' THEN sales ELSE 0 END) AS Jan_sales,
+    SUM(CASE WHEN month = 'Feb' THEN sales ELSE 0 END) AS Feb_sales,
+    SUM(CASE WHEN month = 'Mar' THEN sales ELSE 0 END) AS Mar_sales
+FROM 
+    your_table
+GROUP BY 
+    name;
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
