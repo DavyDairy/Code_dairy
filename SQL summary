@@ -1,1 +1,62 @@
+# 连续空余座位 603
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| seat_id     | int  |
+| free        | bool |
++-------------+------+
+
+Method 1:
+select distinct(c1.seat_id) 
+from cinema c1 join cinema c2
+on    abs(c2.seat_id-c1.seat_id)=1
+where c1.free=1 and c2.free=1
+order by c1.seat_id
+
+Method 2:
+select seat_id
+from (
+    select
+        seat_id ,
+        free ,
+        lag(free,1,999) over() pre_free,
+        lead(free,1,999) over() next_free
+    from  cinema
+)tmp
+where  free=1 and (pre_free=1 or next_free=1 )
+order by  seat_id
+知识点：
+lag(column_name, offset, default_value) OVER (PARTITION BY partition_clause ORDER BY order_clause)
+"column_name" is the name of the column that you want to retrieve the value from.
+"offset" is the number of rows before or after the current row to retrieve the value from. The default value is 1, which means the function retrieves the value from the previous or next row.
+"default_value" is the value to return if the function cannot retrieve a value from the previous or next row.
+
+Method 3: 类似我的想法
+select
+    seat_id
+from(
+    select
+        seat_id
+        ,count(*) over(partition by rk) num
+    from(
+        select
+            seat_id
+            ,seat_id - row_number() over() as rk
+        from(
+            select
+            seat_id
+            from
+                cinema
+            where free = 1    
+        )t1    
+    )t2    
+)t3
+where num > 1
+---------------------------------------------------------------------------------------------------------------------------------------------
+窗口函数中可以用聚合函数作排序依据
+rank() over(order by 聚合函数)
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
