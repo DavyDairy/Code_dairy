@@ -135,4 +135,25 @@ GROUP BY p.product_id
 HAVING SUM(sale_date < '2019-01-01')=0
 AND SUM(sale_date>'2019-03-31')=0;
 --------------------------------------------------------------------------------------------------------------------------------------------------------
+次日留存率
+select install_dt, 
+        count(distinct if(datediff(t2.event_date, install_dt) = 1, t2.player_id,null))/count(distinct install.player_id) Day1_retention
+from (
+    select player_id, min(event_date) install_dt
+    from Activity
+    group by player_id
+)install 
+left join Activity t2
+on t2.player_id = install.player_id
+group by install_dt
 
+更简单的，利用窗口min()over，不用自连接
+select first_date as install_dt,
+sum(if(datediff(event_date,first_date)=1,1,0))/count(distinct player_id)
+as Day1_retention
+from
+(
+    select player_id,event_date,min(event_date) over(partition by player_id) as first_date
+    from activity
+)tmp
+group by first_date
