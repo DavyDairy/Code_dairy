@@ -1,0 +1,30 @@
+滑动窗口 leetcode 209
+
+Given an array of positive integers nums and a positive integer target, return the minimal length of a 
+subarray whose sum is greater than or equal to target. If there is no such subarray, return 0 instead.
+
+Example 1:
+
+Input: target = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+
+class Solution(object):
+    def minSubArrayLen(self, target, nums):
+        left = 0
+        right = 0
+        length = len(nums)
+        result = float('inf') # 表示正无穷，因为后面要取min，所以这里赋一个比较大的值
+        sum = 0
+
+        for right in range(length):
+            sum += nums[right]
+            while sum >= target: #因为要让这个判断持续，即起始位置的一直移动，所以需要用while持续判断，而不是用if只判断一次
+                result = min(right-left+1,result)
+                sum -= nums[left]
+                left += 1     
+        return result if result != float('inf') else 0
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+        
