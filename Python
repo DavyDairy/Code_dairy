@@ -4,3 +4,10 @@
  .values: A two-dimensional NumPy array of values.
 .columns: An index of columns: the column names.
 .index: An index for the rows: either row numbers or row names.
+
+enumerate()：
+枚举返回index,value
+get()：
+dictionary中的函数，可以用于获取指定键的值，如果键不存在，则可以返回一个默认值。
+set()：
+集合是python当中一种无序的、不重复的数据序列，跟之前的列表、元组、字典都有很大的不同,用{ }大括号表示集合，看上去跟字典用的符号是一样的，但是集合没有key，内部数据也无对应关系。创建空集合（set）：变量=set（）
