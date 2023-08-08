@@ -182,6 +182,7 @@ select avg(rating<3) percentage
 ...
 group by query_name
 **解释：rating<3用于判断，小于3就是返回1，否则返回0。avg求平均就跟把1和0求和再除以行数是一样的结果
+（count(if(...))/count(*)一样的效果）
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 一些占比的计算需要使用到的两张表的聚合结果，但不需要join两张表时，可以直接在select里面嵌入另一张表的计算，eg：
 select contest_id, count(distinct user_id)/(select count(*) from Users) percentage
