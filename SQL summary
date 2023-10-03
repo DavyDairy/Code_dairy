@@ -188,4 +188,14 @@ group by query_name
 select contest_id, count(distinct user_id)/(select count(*) from Users) percentage
 from Register 
 group by contest_id
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+连续出现三次的数字 leetcode 180
+select distinct num ConsecutiveNums
+from(
+  select id, num, 
+       lag(num,1) over(order by id) num1,
+      lag(num,2) over(order by id) num2
+  from Logs
+)t
+where num=num1 and num1=num2
 
